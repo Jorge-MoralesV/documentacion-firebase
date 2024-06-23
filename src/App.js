@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import Home from "./components/Home";
-import Logueo from "./components/Logueo";
+import Home from "./pages/Home";
+import Logueo from "./pages/Logueo";
 import theme from './temaConfig'
 import firebaseApp from "./credenciales";
 import { getAuth, onAuthStateChanged } from "firebase/auth";

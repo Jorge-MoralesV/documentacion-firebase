@@ -1,21 +1,22 @@
 import React, { useState } from 'react'
 import firebaseApp from '../credenciales'
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth'
-import { AppBar, Container, Toolbar, Typography } from '@mui/material'
-import logotec from '../assets/img/logotec.svg'
-import { Alert } from './Alert'
+import { Alert } from '../components/Alert'
+import Bar from '../components/Bar'
+import './Logueo.css'
 
-const auth = getAuth(firebaseApp)
+const auth = getAuth(firebaseApp);
 
-const Logueo = () => {
+function Logueo() {
 
     const [user, setUser] = useState({
         email: '',
         password: ''
-    })
-    const [error, setError] = useState()
+    });
 
-    const [estadoRegistrando, setEstadoRegistrando] = useState(false)
+    const [error, setError] = useState();
+
+    const [estadoRegistrando, setEstadoRegistrando] = useState(false);
 
     const handleChange = ({ target: { name, value } }) => {
         setUser({ ...user, [name]: value })
@@ -27,7 +28,7 @@ const Logueo = () => {
         const contra = e.target.id_password.value
         try {
             if (estadoRegistrando) {
-                const usuario = await createUserWithEmailAndPassword(auth, correo, contra)
+                await createUserWithEmailAndPassword(auth, correo, contra)
             } else {
                 signInWithEmailAndPassword(auth, correo, contra)
             }
@@ -37,7 +38,7 @@ const Logueo = () => {
             } else if (error.code === "auth/invalid-email") {
                 setError('Correo invalido.')
             } else if (error.code === "auth/user-not-found") {
-                setError('Usuarui no encontrado.')
+                setError('Usuario no encontrado.')
             } else {
                 setError('Error desconocido.')
             }
@@ -46,7 +47,7 @@ const Logueo = () => {
 
     const resetPassword = (email) => sendPasswordResetEmail(auth, email)
 
-    const handleResetPassword = async (e) => {
+    const handleResetPassword = async () => {
         if (!user.email) return setError('Please enter your email')
         try {
             await resetPassword(user.email)
@@ -56,64 +57,64 @@ const Logueo = () => {
         }
     }
 
+
     return (
-        <Container>
+        <>
+            <Bar></Bar>
 
-            <br></br>
-            <br></br>
-            <br></br>
-            <br></br>
-
-            <div className='card p-5 bg-light container mt-5'>
-
-                <AppBar position="fixed" color="primary">
-                    <Toolbar>
-                        <img src={logotec} className='img-fluid ml-5 mr-2'></img>
-                        <Typography className='text-center' variant="h6" sx={{ flexGrow: 1 }}>
-                        </Typography>
-                    </Toolbar>
-                </AppBar>
-
-                <h1 className='text-center mb-5'>{estadoRegistrando ? "Regístrate" : "Inicia sesión"}</h1>
+            <div className='container'>
+                <h2 className='text-center text-light mt-2 mb-4 w-100'>{estadoRegistrando ? "Regístrate" : "Inicia sesión"}</h2>
 
                 {error && <Alert message={error}></Alert>}
 
-                <form onSubmit={submitHandler} className='card card-body p-4 mb-3'>
-                    <div className='mb-3'>
-                        <label>Correo electronico:</label>
-                        <input onChange={handleChange} type='text' id='id_correo' name='email' className='form-control'></input>
-                    </div>
-                    <div className='mb-3'>
-                        <label>Contraseña:</label>
-                        <input onChange={handleChange} type='password' id='id_password' name='password' className='form-control'></input>
+                <form onSubmit={submitHandler} className='form'>
+                    <div class="mb-3">
+                        <label for="" class="form-label">Correo electronico:</label>
+                        <input
+                            onChange={handleChange}
+                            type="email"
+                            class="form-control mb-2"
+                            name="email"
+                            id="id_correo"
+                            aria-describedby="helpId"
+                            placeholder="Jhon Doe"
+                        />
+                        <label for="" class="form-label">Contraseña:</label>
+                        <input
+                            onChange={handleChange}
+                            type="password"
+                            class="form-control"
+                            name="password"
+                            id="id_password"
+                            aria-describedby="helpId"
+                            placeholder="jhon@email.com"
+                        />
                     </div>
 
-                    <div >
+                    <div className='d-flex justify-content-center'>
                         <button
                             type='submit'
-                            className='btn btn-primary text-left'>
+                            className='btn btn-primary me-2'>
                             {estadoRegistrando ? "Regístrate" : "Inicia sesión"}
                         </button>
 
-                        <a
+                        <button
                             onClick={handleResetPassword}
-                            className='m-5 text-right'>
-                            {estadoRegistrando ? "" : "Olvide mi contraseña"}
-                        </a>
+                            className={`btn btn-dark text-light ml-2 ${estadoRegistrando ? 'd-none' : ''}`}
+                        >
+                            Olvidé mi contraseña
+                        </button>
                     </div>
 
                 </form>
-
                 <p
-                    className='text-primary text-center'
+                    className='text-light text-center w-100 mt-4'
                     type='button'
                     onClick={() => setEstadoRegistrando(!estadoRegistrando)}>
                     {estadoRegistrando ? "¿Ye tienes una cuenta? Inicia sesión" : "¿No tienes una cuenta? Registrate"}
                 </p>
-
             </div>
-        </Container>
-
+        </>
     )
 }
 

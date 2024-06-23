@@ -8,10 +8,10 @@ import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
 import { Container } from "react-bootstrap";
-import AgregarDoc from "./AgregarDoc";
-import ListarDoc from "./ListarDoc";
+import AgregarDoc from "../components/AgregarDoc";
+import ListarDoc from "../components/ListarDoc";
 import logotec from '../assets/img/logotec.svg'
-import { Alert } from "./Alert";
+import { Alert } from "../components/Alert";
 
 const auth = getAuth(firebaseApp);
 const firestore = getFirestore(firebaseApp);
@@ -20,7 +20,7 @@ const Home = ({ correoUsuario }) => {
 
     const [error, setError] = useState()
 
-    const [arrayTareas, setArrayTareas] = useState(null);
+    const [arrayTareas, setArrayTareas] = useState([]);
     const fakeData = [
         { id: 1, descripcion: "Ejemplo", url: "https://picsum.photos/420" },
     ];
