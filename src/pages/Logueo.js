@@ -4,6 +4,7 @@ import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, se
 import { Alert } from '../components/Alert'
 import Bar from '../components/Bar'
 import './Logueo.css'
+import { Container } from '@mui/material'
 
 const auth = getAuth(firebaseApp);
 
@@ -24,8 +25,8 @@ function Logueo() {
 
     async function submitHandler(e) {
         e.preventDefault();
-        const correo = e.target.id_correo.value
-        const contra = e.target.id_password.value
+        const correo = e.target.email.value
+        const contra = e.target.password.value
         try {
             if (estadoRegistrando) {
                 await createUserWithEmailAndPassword(auth, correo, contra)
@@ -48,7 +49,7 @@ function Logueo() {
     const resetPassword = (email) => sendPasswordResetEmail(auth, email)
 
     const handleResetPassword = async () => {
-        if (!user.email) return setError('Please enter your email')
+        if (!user.email) return setError('Por favor, ingresa tu correo.')
         try {
             await resetPassword(user.email)
             setError('We sent you an email with a link to reset your password')
@@ -60,59 +61,64 @@ function Logueo() {
 
     return (
         <>
-            <Bar></Bar>
+            <Bar showLogout={false}></Bar>
 
-            <div className='container'>
-                <h2 className='text-center text-light mt-2 mb-4 w-100'>{estadoRegistrando ? "Regístrate" : "Inicia sesión"}</h2>
+            <div className='cuerpo'>
 
-                {error && <Alert message={error}></Alert>}
+                <Container className='contenedor'>
 
-                <form onSubmit={submitHandler} className='form'>
-                    <div class="mb-3">
-                        <label for="" class="form-label">Correo electronico:</label>
-                        <input
-                            onChange={handleChange}
-                            type="email"
-                            class="form-control mb-2"
-                            name="email"
-                            id="id_correo"
-                            aria-describedby="helpId"
-                            placeholder="Jhon Doe"
-                        />
-                        <label for="" class="form-label">Contraseña:</label>
-                        <input
-                            onChange={handleChange}
-                            type="password"
-                            class="form-control"
-                            name="password"
-                            id="id_password"
-                            aria-describedby="helpId"
-                            placeholder="jhon@email.com"
-                        />
-                    </div>
+                    <h2 className='text-center text-light mt-2 mb-4 w-100'>{estadoRegistrando ? "Regístrate" : "Inicia sesión"}</h2>
 
-                    <div className='d-flex justify-content-center'>
-                        <button
-                            type='submit'
-                            className='btn btn-primary me-2'>
-                            {estadoRegistrando ? "Regístrate" : "Inicia sesión"}
-                        </button>
+                    {error && <Alert message={error}></Alert>}
 
-                        <button
-                            onClick={handleResetPassword}
-                            className={`btn btn-dark text-light ml-2 ${estadoRegistrando ? 'd-none' : ''}`}
-                        >
-                            Olvidé mi contraseña
-                        </button>
-                    </div>
+                    <form onSubmit={submitHandler} className='form'>
 
-                </form>
-                <p
-                    className='text-light text-center w-100 mt-4'
-                    type='button'
-                    onClick={() => setEstadoRegistrando(!estadoRegistrando)}>
-                    {estadoRegistrando ? "¿Ye tienes una cuenta? Inicia sesión" : "¿No tienes una cuenta? Registrate"}
-                </p>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Correo electronico:</label>
+                            <input
+                                onChange={handleChange}
+                                type="email"
+                                className="form-control mb-2 w-100"
+                                name="email"
+                                id="email"
+                                aria-describedby="helpId"
+                                placeholder="Jhon Doe"
+                            />
+                            <label for="password" class="form-label">Contraseña:</label>
+                            <input
+                                onChange={handleChange}
+                                type="password"
+                                className="form-control w-100"
+                                name="password"
+                                id="password"
+                                aria-describedby="helpId"
+                                placeholder="jhon@email.com"
+                            />
+                        </div>
+
+                        <div className='d-flex justify-content-center w-100'>
+                            <button
+                                type='submit'
+                                className='btn btn-primary'>
+                                {estadoRegistrando ? "Regístrate" : "Inicia sesión"}
+                            </button>
+
+                            <button
+                                onClick={handleResetPassword}
+                                className={`btn btn-dark text-light ms-2 ml-2 ${estadoRegistrando ? 'd-none' : ''}`}
+                            >
+                                Olvidé mi contraseña
+                            </button>
+                        </div>
+
+                    </form>
+                    <p
+                        className='text-light text-center w-100 mt-4'
+                        type='button'
+                        onClick={() => setEstadoRegistrando(!estadoRegistrando)}>
+                        {estadoRegistrando ? "¿Ye tienes una cuenta? Inicia sesión" : "¿No tienes una cuenta? Registrate"}
+                    </p>
+                </Container>
             </div>
         </>
     )

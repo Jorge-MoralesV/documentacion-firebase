@@ -1,24 +1,25 @@
 body {
-    background: #444444;
+    background: #000 !important;
+}
+
+.cuerpo {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
 }
 
-.container {
+.contenedor {
     background: #2C2C2C;
-    display: flex;
     padding: 10px;
-    flex-wrap: wrap;
-    justify-content: center;
     border-radius: 10px;
+    width: 400px !important;
 }
 
 .form {
     background: #444444;
     color: #fff;
-    width: 90%;
+    width: 100%;
     border: none;
     padding: 15px;
     border-radius: 10px;
