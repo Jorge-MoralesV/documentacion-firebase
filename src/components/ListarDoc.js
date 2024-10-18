@@ -1,18 +1,23 @@
 import React from "react";
 import { Stack, Row, Col } from "react-bootstrap";
 import ArticleIcon from '@mui/icons-material/Article';
-import firebaseApp from "../credenciales";
-import { getFirestore, updateDoc, doc } from "firebase/firestore";
 import { IconButton, Typography } from "@mui/material";
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
-
-const firestore = getFirestore(firebaseApp);
+import { doc, updateDoc } from "firebase/firestore";
+import { firestore } from "../credenciales";
 
 const ListarDoc = ({ arrayTareas, correoUsuario, setArrayTareas }) => {
 
   async function eliminarTarea(idTareaAEliminar) {
-    const newArrayTareas = arrayTareas.filter((objetoTarea) => objetoTarea.id !== idTareaAEliminar);
-    setArrayTareas(newArrayTareas);
+    // crear nuevo array de tareas
+    const nvoArrayTareas = arrayTareas.filter(
+      (objetoTarea) => objetoTarea.id !== idTareaAEliminar
+    );
+    // actualizar base de datos
+    const docuRef = doc(firestore, `documentos/${correoUsuario}`);
+    updateDoc(docuRef, { tareas: [...nvoArrayTareas] });
+    //actualizar state
+    setArrayTareas(nvoArrayTareas);
   }
 
   return (

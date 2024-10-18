@@ -2,15 +2,16 @@ import React, { Component } from 'react'
 import { AppBar, IconButton, Toolbar, Typography } from '@mui/material'
 import LogoutIcon from '@mui/icons-material/Logout';
 import logo from '../assets/img/icon.png'
-import { getAuth, signOut } from 'firebase/auth';
-import firebaseApp from '../credenciales';
+import { AuthContext } from '../context/AuthContext';
 
 export class Bar extends Component {
 
+    static contextType = AuthContext;
+
     handleLogout = async () => {
-        const auth = getAuth(firebaseApp);
+        const { logout } = this.context;
         try {
-            await signOut(auth)
+            await logout();
         } catch (error) {
             console.log(error);
         }
