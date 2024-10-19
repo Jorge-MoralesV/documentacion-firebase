@@ -1,32 +1,25 @@
-import React, { useState } from "react";
+import React from "react";
 import Home from "./pages/Home";
 import Logueo from "./pages/Logueo";
 import theme from './temaConfig'
-import firebaseApp from "./credenciales";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { ThemeProvider } from "@mui/system";
-const auth = getAuth(firebaseApp);
+import { AuthProvider } from "./context/AuthContext";
+import { Route, Routes } from "react-router-dom";
+import { ProtectedRoute } from "./components/ProtectedRoute";
 
 function App() {
-  const [usuarioGlobal, setUsuarioGlobal] = useState(null);
-
-  onAuthStateChanged(auth, (usuarioFirebase) => {
-    if (usuarioFirebase) {
-      //código en caso de que haya sesión inciiada
-      setUsuarioGlobal(usuarioFirebase);
-    } else {
-      //código en caso de que no haya sesión iniciada
-      setUsuarioGlobal(null);
-    }
-  });
 
   return (
     <ThemeProvider theme={theme}>
-      {usuarioGlobal ? (
-        <Home correoUsuario={usuarioGlobal.email} />
-      ) : (
-        <Logueo />
-      )}
+      <AuthProvider>
+        <Routes>
+
+          <Route path='/' element={<ProtectedRoute><Home /></ProtectedRoute>} />
+
+          <Route path='/login' element={<Logueo />} />
+
+        </Routes>
+      </AuthProvider>
     </ThemeProvider >
   );
 }

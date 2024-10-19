@@ -1,16 +1,17 @@
 import React, { Component } from 'react'
 import { AppBar, IconButton, Toolbar, Typography } from '@mui/material'
 import LogoutIcon from '@mui/icons-material/Logout';
-import logo from '../assets/img/icon.png'
-import { getAuth, signOut } from 'firebase/auth';
-import firebaseApp from '../credenciales';
+import { AuthContext } from '../context/AuthContext';
+import { Source } from '@mui/icons-material';
 
 export class Bar extends Component {
 
+    static contextType = AuthContext;
+
     handleLogout = async () => {
-        const auth = getAuth(firebaseApp);
+        const { logout } = this.context;
         try {
-            await signOut(auth)
+            await logout();
         } catch (error) {
             console.log(error);
         }
@@ -23,13 +24,13 @@ export class Bar extends Component {
         return (
             <AppBar position="fixed" color="primary">
                 <Toolbar>
-                    <img src={logo} className='me-3' width='40px' alt='logo'></img>
+                    <Source className='me-2' fontSize='large'></Source>
                     <Typography variant="h6" sx={{ flexGrow: 1 }}>
                         Carga de archivos
                     </Typography>
                     {showLogout && (
                         <IconButton onClick={this.handleLogout}>
-                            <LogoutIcon fontSize='large' color='dark'></LogoutIcon>
+                            <LogoutIcon fontSize='large' color='white'></LogoutIcon>
                         </IconButton>
                     )}
                 </Toolbar>
@@ -38,4 +39,4 @@ export class Bar extends Component {
     }
 }
 
-export default Bar
+export default Bar;

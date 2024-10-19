@@ -1,3 +1,32 @@
+/*Login*/
+body {
+    background: #000 !important;
+}
+
+.cuerpo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.contenedor {
+    background: #2C2C2C;
+    padding: 10px;
+    border-radius: 10px;
+    width: 400px !important;
+}
+
+.form {
+    background: #444444;
+    color: #fff;
+    width: 100%;
+    border: none;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+/*Home*/
 .encabezado {
     margin-top: 100px;
 }
@@ -12,11 +41,35 @@
 }
 
 .contenedor-lista {
-    margin-top: 20px;
+    margin: 20px auto 0 auto;
     border-radius: 10px;
     padding: 10px;
     background-color: #2C2C2C;
     height: 55vh;
     width: 100%;
     overflow: auto;
+}
+
+.tarjeta {
+    background: #444444;
+    align-items: center;
+    padding: 20px;
+    border-radius: 10px;
+    margin: 10px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+@media screen and (max-width: 600px) {
+
+    .contenedor-nombre-archivo {
+        width: 100%;
+        text-align: center;
+        margin: auto;
+    }
+
+    .contenedor-botones {
+        margin: auto;
+    }
 }
