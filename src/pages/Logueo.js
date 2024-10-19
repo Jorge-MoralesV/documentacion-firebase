@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Alert } from '../components/Alert'
 import Bar from '../components/Bar'
-import './Logueo.css'
+import './Home.css'
 import { Container } from '@mui/material'
 import { useAuth } from '../context/AuthContext'
 import { useNavigate } from 'react-router-dom'
@@ -23,16 +23,12 @@ const Logueo = () => {
 
     async function submitHandler(e) {
         e.preventDefault();
-        const usr = e.target.email.value;
-        const pss = e.target.password.value;
         setError('');
         try {
             if (estadoLogin) {
                 await signUp(user.email, user.password);
-                console.log(usr, pss);
             } else {
                 await login(user.email, user.password);
-                console.log(usr, pss);
             }
             navigate('/');
         } catch (error) {
@@ -51,7 +47,6 @@ const Logueo = () => {
         };
         const mensaje = errorMessages[error.code] || 'Error desconocido.';
         setError(mensaje);
-        console.log(error.code)
     }
 
     const handleResetPassword = async () => {
@@ -72,8 +67,8 @@ const Logueo = () => {
                     <h2 className='text-center text-light mt-2 mb-4 w-100'>{estadoLogin ? "Regístrate" : "Inicia sesión"}</h2>
                     {error && <Alert message={error}></Alert>}
                     <form onSubmit={submitHandler} className='form'>
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Correo electronico:</label>
+                        <div className="mb-3">
+                            <label for="email" className="form-label">Correo electronico:</label>
                             <input
                                 onChange={handleChange}
                                 id="email"
@@ -83,7 +78,7 @@ const Logueo = () => {
                                 aria-describedby="helpId"
                                 placeholder="jhon@email.com"
                             />
-                            <label for="password" class="form-label">Contraseña:</label>
+                            <label for="password" className="form-label">Contraseña:</label>
                             <input
                                 onChange={handleChange}
                                 id="password"

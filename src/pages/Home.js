@@ -49,7 +49,7 @@ const Home = () => {
                             Hola: {user.email}
                         </h1>
                     </div>
-                    <div className=''>
+                    <div>
                         <AgregarDoc
                             arrayTareas={arrayTareas}
                             setArrayTareas={setArrayTareas}

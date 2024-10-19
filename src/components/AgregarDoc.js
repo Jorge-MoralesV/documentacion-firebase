@@ -3,12 +3,21 @@ import { Form } from "react-bootstrap";
 import BackupIcon from '@mui/icons-material/Backup';
 import { firestore, storage } from "../credenciales";
 import { doc, setDoc } from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
+import { useEffect } from "react";
+import { Alert } from "./Alert";
 
 const AgregarDoc = ({ correoUsuario, setArrayTareas, arrayTareas }) => {
 
   const [nombreArchivo, setNombreArchivo] = useState('');
   const [urlDescarga, setUrlDescarga] = useState('');
+  const [botonEstado, setBotonEstado] = useState(true);
+  const [progress, setProgress] = useState(0);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    setBotonEstado(!(nombreArchivo && urlDescarga));
+  }, [nombreArchivo, urlDescarga]);
 
   async function addTask(e) {
     e.preventDefault();
@@ -26,25 +35,32 @@ const AgregarDoc = ({ correoUsuario, setArrayTareas, arrayTareas }) => {
     try {
       await setDoc(docuRef, { tareas: newArrayTareas }, { merge: true });
       setArrayTareas(newArrayTareas);
-      console.log('Documento actualizado en Firestore:', newArrayTareas);
     } catch (error) {
-      console.error('Error al actualizar Firestore:', error);
+      setError('Error al actualizar Firestore:', error);
     }
+
     setNombreArchivo('');
     setUrlDescarga('');
+    setProgress(0);
   }
 
   async function fileHandler(e) {
     const archivoLocal = e.target.files[0];
     const archivoRef = ref(storage, `archivos/${archivoLocal.name}`);
-    try {
-      await uploadBytes(archivoRef, archivoLocal);
-      const url = await getDownloadURL(archivoRef);
-      setUrlDescarga(url);
-      console.log('Archivo cargado y URL obtenida:', url);
-    } catch (error) {
-      console.error('Error al cargar archivo a Firebase Storage:', error);
-    }
+    const uploadTask = uploadBytesResumable(archivoRef, archivoLocal);
+
+    uploadTask.on('state_changed',
+      (snapshot) => {
+        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        setProgress(progress);
+      }, (error) => {
+        setError('Error al cargar archivo a Firebase Storage:', error);
+      }, () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((url) => {
+          setUrlDescarga(url);
+        });
+      }
+    );
   }
 
   return (
@@ -71,12 +87,27 @@ const AgregarDoc = ({ correoUsuario, setArrayTareas, arrayTareas }) => {
           />
         </div>
 
+        <div className="progress p-0">
+          <div
+            className="progress-bar progress-bar-striped bg-primary progress-bar-animated"
+            role="progressbar"
+            style={{ width: `${progress}%` }}
+            aria-valuenow={progress}
+            aria-valuemin="0"
+            aria-valuemax="100"
+          >
+            {Math.round(progress)}%
+          </div>
+        </div>
+
         <div className="col-auto m-auto pt-4">
-          <button className="btn btn-dark">
+          <button className="btn btn-dark" disabled={botonEstado}>
             Subir
             <BackupIcon className="ms-2" fontSize='small' color='light'></BackupIcon>
           </button>
         </div>
+
+        {error && <Alert message={error}></Alert>}
 
       </div>
     </form>
@@ -84,13 +115,3 @@ const AgregarDoc = ({ correoUsuario, setArrayTareas, arrayTareas }) => {
 };
 
 export default AgregarDoc;
-
-
-/* rules_version = '2';
-service firebase.storage {
-  match /b/{bucket}/o {
-    match /{allPaths=**} {
-      allow read, write: if true;
-    }
-  }
-} */

@@ -1,10 +1,10 @@
 import React from "react";
-import { Stack, Row, Col } from "react-bootstrap";
-import ArticleIcon from '@mui/icons-material/Article';
+import { Stack } from "react-bootstrap";
 import { IconButton, Typography } from "@mui/material";
-import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import { doc, updateDoc } from "firebase/firestore";
 import { firestore } from "../credenciales";
+import '../pages/Home.css';
+import { FileOpenTwoTone, FolderDeleteTwoTone } from "@mui/icons-material";
 
 const ListarDoc = ({ arrayTareas, correoUsuario, setArrayTareas }) => {
 
@@ -21,42 +21,33 @@ const ListarDoc = ({ arrayTareas, correoUsuario, setArrayTareas }) => {
   }
 
   return (
+    <>
+      <Stack>
+        {arrayTareas.map((objetoTarea) => {
+          return (
+            <div className="tarjeta text-white">
 
-    <Stack>
-      {arrayTareas.map((objetoTarea) => {
-        return (
-          <div className="card card-body mb-2 bg-light">
+              <div className="contenedor-nombre-archivo">
+                <Typography className='text-left' variant="h6" sx={{ flexGrow: 1 }}>
+                  Nombre del archivo: {objetoTarea.nombre}
+                </Typography>
+              </div>
 
-            <Row>
+              <div className="contenedor-botones">
+                <IconButton href={objetoTarea.url} target="_blank">
+                  <FileOpenTwoTone fontSize='large' color='success' />
+                </IconButton>
 
-              <Col>
-                <div>
-                  <Typography className='text-left' variant="h6" sx={{ flexGrow: 1 }}>
-                    {objetoTarea.nombre}
-                  </Typography>
-                </div>
-              </Col>
+                <IconButton onClick={() => eliminarTarea(objetoTarea.id)}>
+                  <FolderDeleteTwoTone fontSize='large' color='error' />
+                </IconButton>
+              </div>
 
-              <Col></Col>
-              <Col></Col>
-
-              <Col>
-                <div className="text-center">
-                  <IconButton href={objetoTarea.url} target="_blank">
-                    <ArticleIcon fontSize='large' color='success' ></ArticleIcon>
-                  </IconButton>
-                  <IconButton onClick={() => eliminarTarea(objetoTarea.id)}>
-                    <RemoveCircleOutlineIcon fontSize='large' color='error' ></RemoveCircleOutlineIcon>
-                  </IconButton>
-                </div>
-              </Col>
-
-            </Row>
-
-          </div>
-        );
-      })}
-    </Stack>
+            </div>
+          );
+        })}
+      </Stack>
+    </>
   );
 };
 
