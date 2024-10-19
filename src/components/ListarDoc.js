@@ -9,17 +9,12 @@ import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 const firestore = getFirestore(firebaseApp);
 
 const ListarDoc = ({ arrayTareas, correoUsuario, setArrayTareas }) => {
+
   async function eliminarTarea(idTareaAEliminar) {
-    // crear nuevo array de tareas
-    const nvoArrayTareas = arrayTareas.filter(
-      (objetoTarea) => objetoTarea.id !== idTareaAEliminar
-    );
-    // actualizar base de datos
-    const docuRef = doc(firestore, `documentos/${correoUsuario}`);
-    updateDoc(docuRef, { tareas: [...nvoArrayTareas] });
-    //actualizar state
-    setArrayTareas(nvoArrayTareas);
+    const newArrayTareas = arrayTareas.filter((objetoTarea) => objetoTarea.id !== idTareaAEliminar);
+    setArrayTareas(newArrayTareas);
   }
+
   return (
 
     <Stack>
@@ -32,7 +27,7 @@ const ListarDoc = ({ arrayTareas, correoUsuario, setArrayTareas }) => {
               <Col>
                 <div>
                   <Typography className='text-left' variant="h6" sx={{ flexGrow: 1 }}>
-                    {objetoTarea.descripcion}
+                    {objetoTarea.nombre}
                   </Typography>
                 </div>
               </Col>
@@ -42,7 +37,7 @@ const ListarDoc = ({ arrayTareas, correoUsuario, setArrayTareas }) => {
 
               <Col>
                 <div className="text-center">
-                  <IconButton href={objetoTarea.url}>
+                  <IconButton href={objetoTarea.url} target="_blank">
                     <ArticleIcon fontSize='large' color='success' ></ArticleIcon>
                   </IconButton>
                   <IconButton onClick={() => eliminarTarea(objetoTarea.id)}>

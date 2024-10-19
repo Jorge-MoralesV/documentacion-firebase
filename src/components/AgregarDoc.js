@@ -1,81 +1,76 @@
-import React from "react";
+import React, { useState } from "react";
 import { Form, Col } from "react-bootstrap";
 import BackupIcon from '@mui/icons-material/Backup';
 import firebaseApp from "../credenciales";
 import { getFirestore, updateDoc, doc } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { IconButton } from "@mui/material";
+import { equalTo } from "firebase/database";
 
 const firestore = getFirestore(firebaseApp);
 const storage = getStorage(firebaseApp);
 
 const AgregarDoc = ({ correoUsuario, setArrayTareas, arrayTareas }) => {
-  let urlDescarga;
+
+  const [nombreArchivo, setNombreArchivo] = useState('');
+  const [urlDescarga, setUrlDescarga] = useState('');
 
   async function añadirTarea(e) {
     e.preventDefault();
-    const descripcion = e.target.formDescripcion.value;
-    // crear nuevo array de tareas
-    const nvoArrayTareas = [
+
+    const newArrayTareas = [
       ...arrayTareas,
       {
         id: +new Date(),
-        descripcion: descripcion,
+        nombre: nombreArchivo,
         url: urlDescarga,
       },
     ];
-    // actualizar base de datos
-    const docuRef = doc(firestore, `documentos/${correoUsuario}`);
-    updateDoc(docuRef, { tareas: [...nvoArrayTareas] });
-    //actualizar estado
-    setArrayTareas(nvoArrayTareas);
-    // limpiar form
-    e.target.formDescripcion.value = "";
+    setArrayTareas(newArrayTareas);
+
+    setNombreArchivo('');
+    setUrlDescarga('');
   }
 
   async function fileHandler(e) {
-    // detectar archivo
     const archivoLocal = e.target.files[0];
-    // cargarlo a firebase storage
-    const archivoRef = ref(storage, `archivos/${archivoLocal.name}`);
-    await uploadBytes(archivoRef, archivoLocal);
-    // obtener url de descarga
-    urlDescarga = await getDownloadURL(archivoRef);
+    const url = URL.createObjectURL(archivoLocal);
+    setUrlDescarga(url);
   }
 
   return (
-    <form onSubmit={añadirTarea}>
+    <form onSubmit={añadirTarea} className="form">
 
-      <div className="p-3 row g-3">
+      <div className="p-2 row g-3">
 
-        <div className="col-auto">
+        <div className="col-auto w-100">
           <Form.Control
-            className=""
+            className="form-control"
             type="text"
             placeholder="Nombre del documento"
-            id="formDescripcion"
+            id="formNombre"
+            value={nombreArchivo}
+            onChange={(e) => setNombreArchivo(e.target.value)}
           />
         </div>
 
-        <div className="col-auto">
+        <div className="col-auto w-100">
           <Form.Control
-            className=""
+            className="form-control"
             type="file"
+            id="formArchivo"
             onChange={fileHandler}
           />
         </div>
 
-        <div className="col-auto">
-          <Col>
-            <IconButton type="submit">
-              <BackupIcon fontSize='large' color='primary' ></BackupIcon>
-            </IconButton>
-          </Col>
+        <div className="col-auto m-auto pt-4">
+          <button className="btn btn-dark">
+            Subir
+            <BackupIcon className="ms-2" fontSize='small' color='light' ></BackupIcon>
+          </button>
         </div>
 
       </div>
 
-      <hr />
     </form>
   );
 };
