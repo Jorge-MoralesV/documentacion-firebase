@@ -32,7 +32,7 @@ const Home = () => {
         } else {
             setError('Usuario no autenticado');
         }
-    })
+    }, [user]);
 
     useEffect(() => {
         fetchDocumentos();
